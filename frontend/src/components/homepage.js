@@ -1,6 +1,6 @@
 import React from "react";
 import Navbar from "./navbar";
-
+import ChessBoard from "./Chessboard";
 const HomePage = () => {
     const handleProfileClick = (columnIndex) => {
         console.log(`Clicked profile button in column ${columnIndex}`);
@@ -11,7 +11,7 @@ const HomePage = () => {
       <Navbar />
       <div style={{ display: "flex" }}>
             <div style={{ flex: 1 }}>Column 1</div>
-            <div style={{ flex: 1 }}>Column 2</div>
+            <div style={{ flex: 1 }}><ChessBoard/></div>
             <div style={{ flex: 1 }}>Column 3</div>
         </div>
     </div>
