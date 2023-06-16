@@ -18,6 +18,7 @@ const ChessBoard = () => {
   const [selectedPiece, setSelectedPiece] = useState(null);
   const [originSquare, setOriginSquare] = useState(null);
   const [dragging, setDragging] = useState(false);
+  const [flipped, setFlipped] = useState(false);
 
   const handleDragStart = (event, piece, square) => {
     setSelectedPiece(piece);
@@ -42,8 +43,15 @@ const ChessBoard = () => {
     setDragging(false);
   };
 
+  const handleFlipBoard = () => {
+    setFlipped(!flipped);
+  };
+
   const renderSquare = (row, col) => {
-    const squareColor = (row + col) % 2 === 0 ? 'white' : 'gray';
+    const flippedRow = flipped ? 7 - row : row;
+    const flippedCol = flipped ? 7 - col : col;
+
+    const squareColor = (flippedRow + flippedCol) % 2 === 0 ? 'white' : 'gray';
     const squareStyle = {
       backgroundColor: squareColor,
       width: squareSize,
@@ -56,7 +64,7 @@ const ChessBoard = () => {
       cursor: 'pointer',
     };
 
-    const square = `${String.fromCharCode(65 + col)}${8 - row}`;
+    const square = `${String.fromCharCode(65 + flippedCol)}${8 - flippedRow}`;
     const piece = pieces[square];
 
     const handleDrag = (event) => {
@@ -94,7 +102,12 @@ const ChessBoard = () => {
     return squares;
   };
 
-  return <div style={{ display: 'flex', flexWrap: 'wrap', width: boardSize * squareSize }}>{renderBoard()}</div>;
+  return (
+    <div>
+      <div style={{ display: 'flex', flexWrap: 'wrap', width: boardSize * squareSize }}>{renderBoard()}</div>
+      <button onClick={handleFlipBoard}>Flip Board</button>
+    </div>
+  );
 };
 
 export default ChessBoard;
