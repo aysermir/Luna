@@ -15,11 +15,13 @@ const ChessBoard = () => {
     'C8': '♝', 'F8': '♝',
     'D8': '♛', 'E8': '♚',
   });
+
+  const [currentPlayer, setCurrentPlayer] = useState('white');
   const [selectedPiece, setSelectedPiece] = useState(null);
   const [originSquare, setOriginSquare] = useState(null);
   const [dragging, setDragging] = useState(false);
   const [flipped, setFlipped] = useState(false);
-
+  const [moves, setMoves] = useState([]);
   const handleDragStart = (event, piece, square) => {
     setSelectedPiece(piece);
     setOriginSquare(square);
@@ -32,16 +34,35 @@ const ChessBoard = () => {
 
   const handleDrop = (event, square) => {
     event.preventDefault();
+    
+    // Check if it's the correct player's turn
+    if (pieces[originSquare][0] !== currentPlayer[0]) {
+      // It's not the current player's turn, so return early
+      return;
+    }
+  
     setPieces((prevPieces) => {
       const newPieces = { ...prevPieces };
       delete newPieces[originSquare];
       newPieces[square] = selectedPiece;
       return newPieces;
     });
+  
+    // Create a string representing the move (e.g., "Pawn from A2 to A4")
+    const move = `${selectedPiece} from ${originSquare} to ${square}`;
+  
+    // Add the move to the moves array
+    setMoves((prevMoves) => [...prevMoves, move]);
+  
+    // Toggle the current player's turn
+    setCurrentPlayer(currentPlayer === 'white' ? 'black' : 'white');
+  
     setSelectedPiece(null);
     setOriginSquare(null);
     setDragging(false);
   };
+  
+  
 
   const handleFlipBoard = () => {
     setFlipped(!flipped);
@@ -104,8 +125,16 @@ const ChessBoard = () => {
 
   return (
     <div>
-      <div style={{ display: 'flex', flexWrap: 'wrap', width: boardSize * squareSize }}>{renderBoard()}</div>
-      <button onClick={handleFlipBoard}>Flip Board</button>
+<div>
+  <div style={{ display: 'flex', flexWrap: 'wrap', width: boardSize * squareSize }}>{renderBoard()}</div>
+  <button onClick={handleFlipBoard}>Flip Board</button>
+  <ul>
+    {moves.map((move, index) => (
+      <li key={index}>{move}</li>
+    ))}
+  </ul>
+</div>
+      
     </div>
   );
 };
